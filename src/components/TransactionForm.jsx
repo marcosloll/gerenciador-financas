@@ -6,6 +6,11 @@ function TransactionForm({ onAddTransaction }) {
   const [amount, setAmount] = useState("");
   const [type, setType] = useState("income");
 
+  function handleAmountChange(e) {
+    const value = e.target.value.replace(/[^0-9]/g, "");
+    setAmount(value);
+  }
+
   function handleSubmit(e) {
     e.preventDefault();
     if (!description || !amount) return;
@@ -13,7 +18,7 @@ function TransactionForm({ onAddTransaction }) {
     onAddTransaction({
       id: crypto.randomUUID(),
       description,
-      amount: parseFloat(amount),
+      amount: parseFloat(amount) / 100,
       type,
     });
 
@@ -44,10 +49,16 @@ function TransactionForm({ onAddTransaction }) {
           Amount
         </label>
         <Input
-          type="number"
-          placeholder="Enter transaction amount"
-          value={amount}
-          onChange={(e) => setAmount(e.target.value)}
+          type="text"
+          placeholder="0.00"
+          value={
+            amount
+              ? (parseFloat(amount) / 100).toLocaleString("en-US", {
+                  minimumFractionDigits: 2,
+                })
+              : ""
+          }
+          onChange={handleAmountChange}
         />
       </div>
       <div className="mb-4">
@@ -64,7 +75,7 @@ function TransactionForm({ onAddTransaction }) {
         </select>
       </div>
       <button
-        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline"
+        className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
         type="submit"
       >
         Add Transaction

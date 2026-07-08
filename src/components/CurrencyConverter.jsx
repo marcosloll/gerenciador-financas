@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { formatCurrency } from "../utils/formatCurrency";
 
 const API_KEY = import.meta.env.VITE_EXCHANGE_API_KEY;
 function CurrencyConverter() {
@@ -19,7 +20,7 @@ function CurrencyConverter() {
     setLoading(true);
     try {
       const response = await fetch(
-        `https://v6.exchangerate-api.com/v6/${API_KEY}/pair/${fromCurrency}/${toCurrency}/${amount}`
+        `https://v6.exchangerate-api.com/v6/${API_KEY}/pair/${fromCurrency}/${toCurrency}/${amount}`,
       );
       const data = await response.json();
       setResult(data.conversion_result);
@@ -32,7 +33,9 @@ function CurrencyConverter() {
 
   return (
     <div className="bg-white p-6 rounded-lg shadow mb-6">
-      <h2 className="text-xl font-bold text-gray-800 mb-4">Currency Converter</h2>
+      <h2 className="text-xl font-bold text-gray-800 mb-4">
+        Currency Converter
+      </h2>
       <div className="flex flex-col sm:flex-row gap-4 mb-4">
         <input
           type="number"
@@ -50,7 +53,9 @@ function CurrencyConverter() {
           }}
           className="shadow border rounded py-2 px-3 text-gray-700"
         >
-          {currencies.map((c) => <option key={c}>{c}</option>)}
+          {currencies.map((c) => (
+            <option key={c}>{c}</option>
+          ))}
         </select>
         <span className="flex items-center font-bold text-gray-500">→</span>
         <select
@@ -61,7 +66,9 @@ function CurrencyConverter() {
           }}
           className="shadow border rounded py-2 px-3 text-gray-700"
         >
-          {currencies.map((c) => <option key={c}>{c}</option>)}
+          {currencies.map((c) => (
+            <option key={c}>{c}</option>
+          ))}
         </select>
       </div>
       <button
@@ -72,7 +79,8 @@ function CurrencyConverter() {
       </button>
       {result !== null && (
         <p className="mt-4 text-lg font-semibold text-gray-800">
-          {amount} {fromCurrency} = {result.toFixed(2)} {toCurrency}
+          {formatCurrency(parseFloat(amount), fromCurrency)} ={" "}
+          {formatCurrency(result, toCurrency)}
         </p>
       )}
     </div>

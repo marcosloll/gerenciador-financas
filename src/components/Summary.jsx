@@ -1,3 +1,5 @@
+import { formatCurrency } from "../utils/formatCurrency";
+
 function Summary({ transactions }) {
   const totalIncome = transactions
     .filter((t) => t.type === "income")
@@ -10,13 +12,13 @@ function Summary({ transactions }) {
   const netBalance = totalIncome - totalExpenses;
 
   return (
-    <div className="grid grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6-cols-3 gap-4 mb-6">
+    <div className="grid grid-cols-1 sm:grid-cols-3 gap-4 mb-6">
       <div className="bg-white p-6 rounded-lg shadow text-center">
         <h2 className="text-sm font-bold text-gray-500 uppercase">
           Total Income
         </h2>
         <p className="text-2xl font-bold text-green-600">
-          ${totalIncome.toFixed(2)}
+          {formatCurrency(totalIncome)}
         </p>
       </div>
       <div className="bg-white p-6 rounded-lg shadow text-center">
@@ -24,7 +26,7 @@ function Summary({ transactions }) {
           Total Expenses
         </h2>
         <p className="text-2xl font-bold text-red-600">
-          ${totalExpenses.toFixed(2)}
+          {formatCurrency(totalExpenses)}
         </p>
       </div>
       <div className="bg-white p-6 rounded-lg shadow text-center">
@@ -34,7 +36,7 @@ function Summary({ transactions }) {
         <p
           className={`text-2xl font-bold ${netBalance >= 0 ? "text-green-600" : "text-red-600"}`}
         >
-          ${netBalance.toFixed(2)}
+          {formatCurrency(netBalance)}
         </p>
       </div>
     </div>

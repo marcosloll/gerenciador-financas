@@ -1,3 +1,5 @@
+import { formatCurrency } from "../utils/formatCurrency";
+
 function TransactionList({ transactions, onDeleteTransaction }) {
   if (transactions.length === 0) {
     return (
@@ -20,7 +22,8 @@ function TransactionList({ transactions, onDeleteTransaction }) {
             <div>
               <p className="font-medium text-gray-800">{transaction.description}</p>
               <p className={`text-sm ${transaction.type === "income" ? "text-green-600" : "text-red-600"}`}>
-                {transaction.type === "income" ? "+" : "-"}${transaction.amount.toFixed(2)}
+                {transaction.type === "income" ? "+" : "-"}
+                {formatCurrency(transaction.amount)}
               </p>
             </div>
             <button
