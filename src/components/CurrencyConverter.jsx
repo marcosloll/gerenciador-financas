@@ -1,31 +1,49 @@
 import { useState } from "react";
 import { formatCurrency } from "../utils/formatCurrency";
 
-const API_KEY = import.meta.env.VITE_EXCHANGE_API_KEY;
 function CurrencyConverter() {
   const [amount, setAmount] = useState("");
   const [fromCurrency, setFromCurrency] = useState("USD");
   const [toCurrency, setToCurrency] = useState("BRL");
   const [result, setResult] = useState(null);
   const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
 
   const currencies = ["USD", "BRL", "EUR", "GBP", "JPY", "CAD", "AUD"];
 
   async function handleConvert() {
-    if (!amount) return;
-    if (fromCurrency === toCurrency) {
-      setResult(parseFloat(amount));
+    const numericAmount = Number(amount);
+
+    if (!Number.isFinite(numericAmount) || numericAmount <= 0) {
+      setResult(null);
+      setError("Enter an amount greater than zero.");
       return;
     }
+
+    setError("");
+
+    if (fromCurrency === toCurrency) {
+      setResult(numericAmount);
+      return;
+    }
+
     setLoading(true);
+    setResult(null);
+
     try {
       const response = await fetch(
-        `https://v6.exchangerate-api.com/v6/${API_KEY}/pair/${fromCurrency}/${toCurrency}/${amount}`,
+        `/api/convert?from=${encodeURIComponent(fromCurrency)}&to=${encodeURIComponent(toCurrency)}&amount=${encodeURIComponent(numericAmount)}`,
       );
       const data = await response.json();
-      setResult(data.conversion_result);
+
+      if (!response.ok) {
+        throw new Error(data.error || "Currency conversion failed.");
+      }
+
+      setResult(data.conversionResult);
     } catch (error) {
       console.error("Error fetching exchange rate:", error);
+      setError("Unable to convert currencies. Please try again.");
     } finally {
       setLoading(false);
     }
@@ -73,13 +91,22 @@ function CurrencyConverter() {
       </div>
       <button
         onClick={handleConvert}
-        className="bg-green-500 hover:bg-green-700 text-white font-bold py-2 px-4 rounded"
+        disabled={loading}
+        className="bg-green-500 hover:bg-green-700 disabled:cursor-not-allowed disabled:opacity-60 text-white font-bold py-2 px-4 rounded"
       >
         {loading ? "Converting..." : "Convert"}
       </button>
+      {error && (
+        <p role="alert" className="mt-4 text-sm font-semibold text-red-600">
+          {error}
+        </p>
+      )}
       {result !== null && (
-        <p className="mt-4 text-lg font-semibold text-gray-800">
-          {formatCurrency(parseFloat(amount), fromCurrency)} ={" "}
+        <p
+          aria-live="polite"
+          className="mt-4 text-lg font-semibold text-gray-800"
+        >
+          {formatCurrency(numericAmount, fromCurrency)} ={" "}
           {formatCurrency(result, toCurrency)}
         </p>
       )}
