@@ -15,7 +15,7 @@ Aplicação web para registrar receitas e despesas, acompanhar o saldo e convert
 - Resumo automático de entradas, saídas e saldo.
 - Listagem e exclusão de transações.
 - Conversão entre USD, BRL, EUR, GBP, JPY, CAD e AUD.
-- Consulta de câmbio pela ExchangeRate-API.
+- Consulta de câmbio pela ExchangeRate-API por meio de uma função serverless.
 - Interface responsiva.
 
 > As transações ficam no estado da aplicação durante a sessão atual. Recarregar a página reinicia a lista.
@@ -26,6 +26,7 @@ Aplicação web para registrar receitas e despesas, acompanhar o saldo e convert
 ![Vite](https://img.shields.io/badge/Vite_8-646CFF?style=flat-square&logo=vite&logoColor=white)
 ![Tailwind CSS](https://img.shields.io/badge/Tailwind_CSS_4-06B6D4?style=flat-square&logo=tailwindcss&logoColor=white)
 ![JavaScript](https://img.shields.io/badge/JavaScript-F7DF1E?style=flat-square&logo=javascript&logoColor=111)
+![Vercel](https://img.shields.io/badge/Vercel_Functions-000000?style=flat-square&logo=vercel&logoColor=white)
 
 ## Executar localmente
 
@@ -42,21 +43,23 @@ Aplicação web para registrar receitas e despesas, acompanhar o saldo e convert
 3. Instale as dependências com `npm install`.
 4. Copie `.env.example` para `.env.local`.
 5. Substitua o valor de exemplo pela sua chave da ExchangeRate-API.
-6. Inicie o projeto com `npm run dev`.
+6. Inicie o projeto com `npx vercel dev` para executar o front-end e a função serverless.
 
 Exemplo da variável:
 
 ```env
-VITE_EXCHANGE_API_KEY=your_exchange_rate_api_key
+EXCHANGE_API_KEY=your_exchange_rate_api_key
 ```
 
 ## Segurança da chave
 
-Arquivos `.env` não devem ser enviados ao Git. Variáveis iniciadas por `VITE_` são incluídas no código executado pelo navegador, portanto a chave também deve possuir restrições adequadas no serviço de origem.
+Arquivos `.env` não devem ser enviados ao Git. A chave é lida somente pela função serverless em `api/convert.js`. Não use o prefixo `VITE_` para segredos, porque essas variáveis são incorporadas ao código enviado ao navegador.
 
 ## Estrutura principal
 
 ```text
+api/
+└── convert.js
 src/
 ├── components/
 │   ├── CurrencyConverter.jsx
