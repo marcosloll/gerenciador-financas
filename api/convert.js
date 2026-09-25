@@ -29,7 +29,7 @@ export default async function handler(request, response) {
   }
 
   const apiKey =
-    process.env.EXCHANGE_API_KEY || process.env.VITE_EXCHANGE_API_KEY;
+    process.env.EXCHANGE_API_KEY;
 
   if (!apiKey) {
     return response.status(500).json({ error: "Exchange service unavailable." });

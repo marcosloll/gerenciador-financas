@@ -10,10 +10,9 @@ function CurrencyConverter() {
   const [error, setError] = useState("");
 
   const currencies = ["USD", "BRL", "EUR", "GBP", "JPY", "CAD", "AUD"];
+  const numericAmount = Number(amount);
 
   async function handleConvert() {
-    const numericAmount = Number(amount);
-
     if (!Number.isFinite(numericAmount) || numericAmount <= 0) {
       setResult(null);
       setError("Enter an amount greater than zero.");
